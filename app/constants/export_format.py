@@ -1,0 +1,6 @@
+TOML='toml'
+ENV='env'
+EXPORT='export'
+
+DEFAULT_CHOICE=ENV
+CHOICES=[TOML, ENV, EXPORT]
