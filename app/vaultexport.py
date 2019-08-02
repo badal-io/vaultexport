@@ -87,7 +87,7 @@ def _parse_argument():
         '--k8s-auth-role',
         action='store',
         help='Role to validate against vault k8s backend',
-        required=is_required_arg('k8s')
+        required=is_required_arg(auth.K8S)
     )
 
 
@@ -96,21 +96,28 @@ def _parse_argument():
         default='kubernetes',
         action='store',
         help='Mount point for k8s auth',
-        required = is_required_arg('k8s')
+        required = is_required_arg(auth.K8S)
     )
 
     parser.add_argument(
         '--approle-role-id',
         action='store',
         help='role_id for AppRole auth method.',
-        required=is_required_arg('approle')
+        required=is_required_arg(auth.APPROLE)
     )
 
     parser.add_argument(
         '--approle-secret-id',
         action='store',
         help='secret_id for AppRole auth method.',
-        required = is_required_arg('approle')
+        required = is_required_arg(auth.APPROLE)
+    )
+
+    parser.add_argument(
+        '--gcp-role',
+        action='store',
+        help='role for GCP auth method',
+        required=is_required_arg(auth.GCP_GCE)
     )
 
     parser.add_argument(
