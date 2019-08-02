@@ -7,8 +7,9 @@ Currently supports following:
 - Secrets backend:
     1. Supports KV v2 secrets backend
 - Authentication:
-    1. Kubernetes Authentication backendi
-    2. AppRole
+    1. [Kubernetes](https://www.vaultproject.io/docs/auth/kubernetes.html)
+    2. [AppRole](https://www.vaultproject.io/docs/auth/approle.html)
+    3. [GCP GCE](https://www.vaultproject.io/docs/auth/gcp.html)
 - Output:
   1. Toml: The path given in KV is traversed to generate a TOML formatted secrets file with 'section names' being the root of each of the paths
   2. env: 'key=value' file generated
@@ -19,9 +20,8 @@ Python Version Support : 3.7.2
 ## Usage
 
 The help page provides information on proper parameters to pass
-```sh                                                 
-Generates secrets by pulling them from vault. Uses kubernetes SA to
-authenticate against backend
+```sh
+Generates secrets by pulling them from vault. Uses different Vault auth methods authenticate against backend.
 
 positional arguments:
   secrets-engine        Pulls secrets from KV2 backend
@@ -46,6 +46,7 @@ optional arguments:
                         role_id for AppRole auth method. (default: None)
   --approle-secret-id APPROLE_SECRET_ID
                         secret_id for AppRole auth method. (default: None)
+  --gcp-role GCP_ROLE   role for GCP auth method (default: None)
   --verbose, -v         Log verbosity (default: 0)
   --no-tls-verify       Disable tls verification (default: False)
   --vault-address VAULT_ADDRESS
@@ -56,7 +57,6 @@ optional arguments:
   --generated-conf-filename GENERATED_CONF_FILENAME, -n GENERATED_CONF_FILENAME
                         Name of the secrets file to generate (default:
                         secrets.conf)
-```
 
 This program should be used in init container specifically to source secrets before launching app. Steps for ideal scenario:
 1. Create Kubernetes Service account as described in [vault kubernetes auth backend documentation](https://www.vaultproject.io/docs/auth/kubernetes.html)
@@ -92,20 +92,21 @@ subjects:
 spec:
   serviceAccountName: vault
   initContainers:
-    - name: vaultk8
-      image: muvaki/vaultk8
+    - name: vaultexport
+      image: muvaki/vaultexport
       args:
         - "--vault-address"
         - "https://vault.com"
         - "-g"
         - "/etc/vault"
-        - "-n"
+        - "-ef"
         - "env"
         - "--k8-role"
         - "vault"
         - "--k8-auth-mount-point"
         - "kubernetes"
-        - "kv"
+        - "kv-v2"
+        - "-sp"
         - "staging/my_app"
 ...
 ```
