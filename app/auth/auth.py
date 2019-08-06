@@ -51,8 +51,6 @@ def _auth_gcp_gce(client, role, vault_address):
     format = 'full'
     licenses = 'TRUE'
 
-    client.auth_gcp(role=role, jwt=jwt)
-
     # Construct a URL with the audience and format.
     url = 'http://metadata.google.internal/computeMetadata/v1/instance/service-accounts/default/identity?audience={}&format={}&licenses={}'
     url = url.format(audience, format, licenses)
