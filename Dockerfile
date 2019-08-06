@@ -8,5 +8,4 @@ RUN pip install -r requirements.txt
 
 COPY app/ /app
 
-CMD [ "python", "vaultexport.py" ]
-
+ENTRYPOINT [ "python", "/app/vaultexport.py" ]
